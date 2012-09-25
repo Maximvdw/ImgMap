@@ -25,6 +25,7 @@ public class root extends JavaPlugin {
 
 	public class ImgRenderer extends MapRenderer{
 		String URL;
+		boolean flagRender = false;
 
 		public ImgRenderer(String url){
 			URL = url;
@@ -36,25 +37,12 @@ public class root extends JavaPlugin {
 		@SuppressWarnings("deprecation")
 		public void render(MapView map, final MapCanvas canvas, final Player player) {
 			try{
-				final Thread x = new Thread(){
-					public void run(){
-						try {
-							System.out.print("cat.");
-							canvas.drawImage(0, 0, resizeImage(ImageIO.read(new URL(URL))));
-							System.out.print("cats.");
-						} catch (Exception e){
-							e.printStackTrace();
-						}
-					}
-				};
-				x.start();
-				getServer().getScheduler().scheduleSyncDelayedTask(root.this, new Runnable() {
-					public void run() {
-						x.stop();
-						x.destroy();
-					}
+				// Check if url is nothing and if the image is already rendered
+				// Note that this flagRender var is local , so it does not affect other images
+				if(URL != null && flagRender == false){
+					canvas.drawImage(0, 0, resizeImage(ImageIO.read(new URL(URL))));
+					flagRender = true;
 				}
-				,200L);
 			} catch(Exception e){
 				e.printStackTrace();
 			}
